@@ -6,60 +6,89 @@ import lejos.nxt.NXTRegulatedMotor;
 public class Car {	
 	private static final int FRONT_LEFT_LIMIT = 58;
 	private static final int FRONT_RIGHT_LIMIT = -58;
-	private static final int TURN_STEP = 2;
 	private static final int SPEED_STEP = 50;
-	private static final int TRAILER_LEFT_LIMIT = 30;
-	private static final int TRAILER_RIGHT_LIMIT = -30;
-	private static final int MAX_SPEED = 300;
+	private static final int MAX_SPEED = 1000;
+	private static final int HITCH_LEFT_LIMIT = 120;
+	private static final int HITCH_RIGHT_LIMIT = -120;
 	
 	private NXTRegulatedMotor backWheels;
 	private NXTRegulatedMotor frontWheels;
-	private NXTRegulatedMotor trailerHitch;
+	private NXTRegulatedMotor hitch;
+	private HitchAngleSensor angleSensor;
 	
 	private int speed;
 	private int turnSpeed;
-	private int frontAngle;
-	private int trailerAngle;
+	private int hitchSpeed;
 	
 	public Car(){
-		backWheels = Motor.A;
-		frontWheels = Motor.C;
-		trailerHitch = Motor.B;
+		backWheels = Motor.C;
+		frontWheels = Motor.B;
+		hitch = Motor.A;
+		angleSensor = new HitchAngleSensor();
+		angleSensor.calibrate(hitch);
 		
-		speed = 50;
-		turnSpeed = 50;
-		frontAngle = 0;
-		trailerAngle = 0;
+		speed = 500;
+		turnSpeed = 100;
+		hitchSpeed = 100;
 		
 		backWheels.setSpeed(speed);
 		frontWheels.setSpeed(turnSpeed);
+		hitch.setSpeed(hitchSpeed);
 	}
 	
 	public void turnLeft(){
-		if(frontAngle<FRONT_LEFT_LIMIT){
-			frontAngle += TURN_STEP;
-			frontWheels.rotate(TURN_STEP);
+		if(frontWheels.getTachoCount()<FRONT_LEFT_LIMIT){
+			frontWheels.forward();
 		}
 	}
 	
 	public void turnRight(){
-		if(frontAngle<FRONT_RIGHT_LIMIT){
-			frontAngle -= TURN_STEP;
-			frontWheels.rotate(-TURN_STEP);
+		if(frontWheels.getTachoCount()>FRONT_RIGHT_LIMIT){
+			frontWheels.backward();
 		}
 	}
 	
-	public void moveForward(){
-		backWheels.backward();
+	
+	public void turnHitchLeft(){
+		if(hitch.getTachoCount()<HITCH_LEFT_LIMIT){
+			hitch.forward();
+		}
 	}
 	
-	public void moveBackward(){
+	public void turnHitchRight(){
+		if(hitch.getTachoCount()>HITCH_RIGHT_LIMIT){
+			hitch.backward();
+		}
+	}
+	
+	public boolean checkHitchLimit(){
+		if(hitch.getTachoCount() <= HITCH_RIGHT_LIMIT || hitch.getTachoCount() >= HITCH_LEFT_LIMIT){
+			stopHitch();
+			return true;
+		}
+		return false;
+	}
+	
+	
+	
+	public boolean checkTurnLimit(){
+		if(frontWheels.getTachoCount()  <= FRONT_RIGHT_LIMIT || hitch.getTachoCount() >= HITCH_LEFT_LIMIT){
+			stopTurning();
+			return true;
+		}
+		return false;
+	}
+	
+	public void moveForward(){
 		backWheels.forward();
 	}
 	
+	public void moveBackward(){
+		backWheels.backward();
+	}
+	
 	public void resetFront(){
-		frontAngle = 0;
-		frontWheels.rotateTo(frontAngle);
+		frontWheels.rotateTo(0);
 	}
 	
 	public void accelerate(){
@@ -76,7 +105,15 @@ public class Car {
 		}
 	}
 	
-	public void stop(){
-		backWheels.stop();
+	public void stopMoving(){
+		backWheels.flt();
+	}
+	
+	public void stopTurning(){
+		frontWheels.stop();
+	}
+	
+	public void stopHitch(){
+		hitch.stop();
 	}
 }

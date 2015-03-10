@@ -1,7 +1,3 @@
-
-
-
-
 /*
  * September 21, 2009
  * Author Tawat Atigarbodee
@@ -26,7 +22,6 @@
  * as a pattern for creating USB communication between PC and NXT. 
  *
  */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
