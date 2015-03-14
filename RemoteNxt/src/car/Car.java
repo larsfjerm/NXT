@@ -2,12 +2,11 @@ package car;
 
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
+import lejos.nxt.Sound;
 
 public class Car {	
-	private static final int FRONT_LEFT_LIMIT = 58;
-	private static final int FRONT_RIGHT_LIMIT = -58;
-	private static final int SPEED_STEP = 50;
-	private static final int MAX_SPEED = 1000;
+	private static final int FRONT_LEFT_LIMIT = 30;
+	private static final int FRONT_RIGHT_LIMIT = -30;
 	private static final int HITCH_LEFT_LIMIT = 120;
 	private static final int HITCH_RIGHT_LIMIT = -120;
 	
@@ -27,7 +26,7 @@ public class Car {
 		angleSensor = new HitchAngleSensor();
 		angleSensor.calibrate(hitch);
 		
-		speed = 500;
+		speed = 200;
 		turnSpeed = 100;
 		hitchSpeed = 100;
 		
@@ -48,6 +47,25 @@ public class Car {
 		}
 	}
 	
+	public void turnTo(double degrees){
+		int intDegrees = (int) Math.ceil(degrees);
+		if(intDegrees > FRONT_RIGHT_LIMIT && intDegrees < FRONT_LEFT_LIMIT){
+			frontWheels.setSpeed(frontWheels.getMaxSpeed());
+			frontWheels.rotateTo(intDegrees);
+			frontWheels.setSpeed(turnSpeed);
+		}
+	}
+	
+	public void turnHitchTo(double degrees){
+		float r = 90/39;
+		int intDegrees = (int)Math.ceil(degrees*r);
+		if(intDegrees  > HITCH_RIGHT_LIMIT && intDegrees < HITCH_LEFT_LIMIT){
+			hitch.setSpeed(hitch.getMaxSpeed());
+			hitch.rotateTo(intDegrees);
+			hitch.setSpeed(hitchSpeed);
+		}
+	}
+	
 	
 	public void turnHitchLeft(){
 		if(hitch.getTachoCount()<HITCH_LEFT_LIMIT){
@@ -61,22 +79,16 @@ public class Car {
 		}
 	}
 	
-	public boolean checkHitchLimit(){
+	public void checkHitchLimit(){
 		if(hitch.getTachoCount() <= HITCH_RIGHT_LIMIT || hitch.getTachoCount() >= HITCH_LEFT_LIMIT){
 			stopHitch();
-			return true;
 		}
-		return false;
 	}
 	
-	
-	
-	public boolean checkTurnLimit(){
+	public void checkTurnLimit(){
 		if(frontWheels.getTachoCount()  <= FRONT_RIGHT_LIMIT || hitch.getTachoCount() >= HITCH_LEFT_LIMIT){
 			stopTurning();
-			return true;
 		}
-		return false;
 	}
 	
 	public void moveForward(){
@@ -91,20 +103,6 @@ public class Car {
 		frontWheels.rotateTo(0);
 	}
 	
-	public void accelerate(){
-		if(speed<MAX_SPEED){
-			speed+=SPEED_STEP;
-			backWheels.setSpeed(speed);
-		}
-	}
-	
-	public void brake(){
-		if(speed>0){
-			speed-=SPEED_STEP;
-			backWheels.setSpeed(speed);
-		}
-	}
-	
 	public void stopMoving(){
 		backWheels.flt();
 	}
@@ -115,5 +113,13 @@ public class Car {
 	
 	public void stopHitch(){
 		hitch.stop();
+	}
+	
+	public float getHitchAngle(){
+		return angleSensor.getAngle();
+	}
+	
+	public float[] getResult(){
+		return angleSensor.getResult();
 	}
 }

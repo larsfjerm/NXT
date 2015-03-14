@@ -15,9 +15,9 @@ public class HitchAngleSensor {
 	private LightSensor s;
 
 	public HitchAngleSensor(){
-		minAngl = -90;
-		maxAngl = 90;
-		degrees = 36;
+		minAngl = -120;
+		maxAngl = 120;
+		degrees = 40;
 		step = (maxAngl-minAngl)/degrees;
 		result = new float[degrees+1];
 		s = new LightSensor(SensorPort.S1);
@@ -48,7 +48,7 @@ public class HitchAngleSensor {
 		return sum/10;
 	}
 	
-	public int getDegree() {
+	public int getAngle() {
 		float[] a = result;
 		float x = getLightValue();
 		
@@ -79,5 +79,9 @@ public class HitchAngleSensor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public float[] getResult(){
+		return result;
 	}
 }
