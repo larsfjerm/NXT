@@ -2,6 +2,9 @@ package regulator;
 
 public class Regulator {
 	private static double sign(double n){
+		if(n==0){
+			return 1;
+		}
 		return n/Math.abs(n);
 	}
 	
