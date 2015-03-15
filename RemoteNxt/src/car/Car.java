@@ -1,5 +1,6 @@
 package car;
 
+import regulator.Regulator;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.Sound;
@@ -9,6 +10,7 @@ public class Car {
 	private static final int FRONT_RIGHT_LIMIT = -30;
 	private static final int HITCH_LEFT_LIMIT = 120;
 	private static final int HITCH_RIGHT_LIMIT = -120;
+	private static final int HITCH_RATIO = 90/39;
 	
 	private NXTRegulatedMotor backWheels;
 	private NXTRegulatedMotor frontWheels;
@@ -57,8 +59,7 @@ public class Car {
 	}
 	
 	public void turnHitchTo(double degrees){
-		float r = 90/39;
-		int intDegrees = (int)Math.ceil(degrees*r);
+		int intDegrees = (int)Math.ceil(degrees*HITCH_RATIO);
 		if(intDegrees  > HITCH_RIGHT_LIMIT && intDegrees < HITCH_LEFT_LIMIT){
 			hitch.setSpeed(hitch.getMaxSpeed());
 			hitch.rotateTo(intDegrees);
@@ -115,8 +116,23 @@ public class Car {
 		hitch.stop();
 	}
 	
-	public float getHitchAngle(){
+	public void regulate(){
+		double psi = (getHitchAngle() - getTrailerAngle())*Math.PI/180;
+		double alpha =  (getTurnAngle())*Math.PI/180;
+		double beta = Regulator.getBeta(alpha, psi)*180/Math.PI;
+		turnHitchTo(beta);
+	}
+	
+	public float getTrailerAngle(){
 		return angleSensor.getAngle();
+	}
+	
+	public float getTurnAngle(){
+		return frontWheels.getTachoCount();
+	}
+	
+	public float getHitchAngle(){
+		return hitch.getTachoCount()/HITCH_RATIO;
 	}
 	
 	public float[] getResult(){

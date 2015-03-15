@@ -45,10 +45,17 @@ public class RegulatorTest{
 		car.stopMoving();
 	}
 	
+	private void run2(){
+		car.moveBackward();
+		while(true){
+			car.regulate();
+		}
+	}
+	
 	public static void main(String[] args) {
 		RegulatorTest r = new RegulatorTest();
 		System.out.println("Press button to start.");
 		Button.waitForAnyPress();
-		r.run();
+		r.run2();
 	}
 }
