@@ -1,15 +1,24 @@
 package regulator;
 
 public class Regulator {
+	
+	private static double psi_last = 0;
+	
 	private static double sign(double n){
+		
+		if(n == 0){
 		return n/Math.abs(n);
+		}else{
+			return 1;
+		}
 	}
 	
 	public static double getBeta(double alpha, double psi){
 		double kp = 1;
+		double kd = 1;
 		double lb = 0.162;
 		double d = 0.096;
-		
+		double dt = 0.1;
 		double gamma;
 		double psiRef;
 		
@@ -22,7 +31,16 @@ public class Regulator {
 			psiRef = 0;
 		}
 		psiRef *= alphaSgn;
+		
+		
+		// calculation of error psi
 		double errorPsi = psi-psiRef;
-		return kp*errorPsi;
+		
+		// calculation of error dpsi
+		double deltaPsi = (psi-psi_last)/dt;
+		psi_last = psi;
+		double errorDeltaPsi = deltaPsi-errorPsi;
+		
+		return kp*errorPsi + kd*errorDeltaPsi;
 	}
 }
