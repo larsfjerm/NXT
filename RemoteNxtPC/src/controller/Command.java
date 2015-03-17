@@ -7,6 +7,7 @@ public enum Command {
 	RIGHT,
 	HITCH_LEFT,
 	HITCH_RIGHT,
+	UPDATE_BETA,
 	STOP_MOVE,
 	STOP_TURN,
 	STOP_HITCH;

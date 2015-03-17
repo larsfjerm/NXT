@@ -6,8 +6,10 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import regulator.Regulator;
 import lejos.pc.comm.NXTConnector;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -16,20 +18,35 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static DataOutputStream outData;
-	public static NXTConnector link;
-
+	private  DataOutputStream dataOut;
+	private  DataInputStream dataIn;
+	private  NXTConnector link;
+	
+//	private Regulator r;
+	
 	public Controller(){ 
 		super("Car controller");
-		init();
 		connect();
+		init();
 	}
+	
+//	public void run(){
+//		while(true){
+//			if(!r.checkForUpdate())
+//				break;
+//			if(r.isReady()){
+//				if(!r.sendUpdate())
+//					break;
+//			}
+//		}
+//	}
 
 	public void init(){
 		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		manager.addKeyEventDispatcher(this);
 		pack();
 		setVisible(true);
+//		r = new Regulator(dataIn, dataOut);
 	}
 
 	@Override
@@ -50,7 +67,8 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 		{
 			System.out.println("\nNo NXT find using bluetooth");
 		}else{
-			outData = new DataOutputStream(link.getOutputStream());
+			dataOut = new DataOutputStream(link.getOutputStream());
+			dataIn = new DataInputStream(link.getInputStream());
 			System.out.println("\nNXT is Connected");   			
 		}
 
@@ -60,8 +78,8 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	private void sendCommand(Command c){
 		try{
 			System.out.println(c);
-			outData.writeInt(c.ordinal());
-			outData.flush(); 
+			dataOut.writeInt(c.ordinal());
+			dataOut.flush(); 
 		}catch(IOException e){
 			System.out.println("\nIO Exception writeInt");
 		}
@@ -95,7 +113,8 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	public void disconnect()
 	{
 		try{
-			outData.close();
+			dataOut.close();
+			dataIn.close();
 			link.close();
 		} 
 		catch (IOException ioe) {
@@ -106,6 +125,7 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	}
 
 	public static void main(String[] args){
-		new Controller();
+		Controller c = new Controller();
+//		c.run();
 	}
 }

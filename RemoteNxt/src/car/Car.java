@@ -17,7 +17,8 @@ public class Car {
 	private NXTRegulatedMotor hitch;
 	private HitchAngleSensor angleSensor;
 	
-	private int speed;
+	private int backwardSpeed;
+	private int forwardSpeed;
 	private int turnSpeed;
 	private int hitchSpeed;
 	
@@ -28,11 +29,12 @@ public class Car {
 		angleSensor = new HitchAngleSensor();
 		angleSensor.calibrate(hitch);
 		
-		speed = 200;
+		backwardSpeed = 50;
+		forwardSpeed = 200;
 		turnSpeed = 100;
 		hitchSpeed = 100;
 		
-		backWheels.setSpeed(speed);
+		backWheels.setSpeed(forwardSpeed);
 		frontWheels.setSpeed(turnSpeed);
 		hitch.setSpeed(hitchSpeed);
 	}
@@ -93,11 +95,20 @@ public class Car {
 	}
 	
 	public void moveForward(){
+		backWheels.setSpeed(forwardSpeed);
 		backWheels.forward();
 	}
 	
+	private boolean movingBackward = false;
+	
 	public void moveBackward(){
+		backWheels.setSpeed(backwardSpeed);
 		backWheels.backward();
+		movingBackward = true;
+	}
+	
+	public boolean isMovivingBackward(){
+		return movingBackward;
 	}
 	
 	public void resetFront(){
@@ -106,7 +117,9 @@ public class Car {
 	
 	public void stopMoving(){
 		backWheels.flt();
+		movingBackward = false;
 	}
+	
 	
 	public void stopTurning(){
 		frontWheels.stop();
@@ -114,13 +127,6 @@ public class Car {
 	
 	public void stopHitch(){
 		hitch.stop();
-	}
-	
-	public void regulate(){
-		double psi = (getHitchAngle() - getTrailerAngle())*Math.PI/180;
-		double alpha =  (getTurnAngle())*Math.PI/180;
-		double beta = Regulator.getBeta(alpha, psi)*180/Math.PI;
-		turnHitchTo(beta);
 	}
 	
 	public float getTrailerAngle(){

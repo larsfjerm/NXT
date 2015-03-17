@@ -25,6 +25,8 @@ package controller;
 
 import java.io.*;
 
+import regulator.Regulator;
+import regulator.RegulatorUpdater;
 import car.Car;
 import lejos.nxt.comm.*;
 
@@ -37,14 +39,19 @@ public class CarController{
 	private boolean turn;
 	private boolean hitchTurn;
 	private Car car;
+	private Regulator r;
+//	private RegulatorUpdater rl;
 
 	public CarController(){
 		init();
 		connect();
+//		rl = new RegulatorUpdater(car, dataOut);
 	}
 
 	public void init(){
 		car = new Car();
+		r = new Regulator(car);
+
 		move = false;
 		turn = false;
 		hitchTurn = false;
@@ -59,23 +66,37 @@ public class CarController{
 	}
 
 	public void run(){
+		r.start();
+//		rl.start();
 		while(checkCommand()){}
 	}
 
+//	private boolean waitingForBeta = false;
+
 	public boolean checkCommand(){
 		try {
-			int value = dataIn.readInt();
-			Command c = Command.get(value);
-			if(c==null)
-				return false;
-			if(value < 2)
-				move(c);
-			else if(value < 4)
-				turn(c);
-			else if(value < 6)
-				turnHitch(c);
-			else
-				stop(c);
+//			if(!waitingForBeta){
+				int value = dataIn.readInt();
+				Command c = Command.get(value);
+				if(c==null)
+					return false;
+				if(value < 2)
+					move(c);
+				else if(value < 4)
+					turn(c);
+				else if(value < 6)
+					turnHitch(c);
+//				else if(value < 7)
+//					waitingForBeta = true;
+				else
+					stop(c);
+//			}else{
+//				double beta = dataIn.readDouble();
+//				if(car.isMovivingBackward()){
+//					car.turnHitchTo(beta);
+//				}
+//				waitingForBeta = false;
+//			}
 		} catch (IOException e) {
 			return false;
 		}
@@ -94,7 +115,7 @@ public class CarController{
 
 	private void turn(Command c){
 		car.checkTurnLimit();
-		
+
 		if(!turn){
 			if(c==Command.LEFT)
 				car.turnLeft();
@@ -106,7 +127,7 @@ public class CarController{
 
 	private void turnHitch(Command c){
 		car.checkHitchLimit();
-		
+
 		if(!hitchTurn){
 			if(c==Command.HITCH_RIGHT){
 				car.turnHitchRight();

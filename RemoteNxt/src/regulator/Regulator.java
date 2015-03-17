@@ -1,15 +1,23 @@
 package regulator;
 
-public class Regulator {
-	private static double sign(double n){
+import car.Car;
+
+public class Regulator extends Thread{
+	private Car car;
+	
+	public Regulator(Car car){
+		this.car = car;
+	}
+	
+	private double sign(double n){
 		if(n==0){
 			return 1;
 		}
 		return n/Math.abs(n);
 	}
 	
-	public static double getBeta(double alpha, double psi){
-		double kp = 1;
+	public double getBeta(double alpha, double psi){
+		double kp = 2;
 		double lb = 0.162;
 		double d = 0.096;
 		
@@ -24,8 +32,23 @@ public class Regulator {
 		}else{
 			psiRef = 0;
 		}
-		psiRef *= alphaSgn;
+		psiRef = psiRef*alphaSgn;
 		double errorPsi = psi-psiRef;
 		return kp*errorPsi;
+	}
+	
+	public void regulate(){
+		double psi = (car.getHitchAngle() - car.getTrailerAngle())*Math.PI/180;
+		double alpha =  (car.getTurnAngle())*Math.PI/180;
+		double beta = getBeta(alpha, psi)*180/Math.PI;
+		car.turnHitchTo(beta);
+	}
+	
+	public void run(){
+		while(true){
+			if(car.isMovivingBackward()){
+				regulate();
+			}
+		}
 	}
 }
