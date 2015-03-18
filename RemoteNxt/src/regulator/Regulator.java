@@ -43,11 +43,14 @@ public class Regulator extends Thread{
 	}
 
 	public void regulate(){
-		double psi = (car.getHitchAngle() - car.getTrailerAngle())*Math.PI/180;
-		double alpha =  (car.getTurnAngle())*Math.PI/180;
-		double beta = getBeta(alpha, psi)*180/Math.PI;
-		car.turnHitchTo(beta);
-		log(psi,alpha,beta);
+		double psiDeg = car.getHitchAngle() - car.getTrailerAngle();
+		double psiRad = psiDeg*Math.PI/180;
+		double alphaDeg =  car.getTurnAngle();
+		double alphaRad = alphaDeg*Math.PI/180;
+		double betaRad = getBeta(alphaRad, psiRad);
+		double betaDeg = betaRad*180/Math.PI;
+		car.turnHitchTo(betaDeg);
+		log(psiDeg,alphaDeg,betaDeg);
 	}
 
 	private void log(double psi, double alpha, double beta){

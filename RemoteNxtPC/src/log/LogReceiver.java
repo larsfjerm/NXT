@@ -6,6 +6,7 @@ import java.io.IOException;
 public class LogReceiver extends Thread{
 	private DataInputStream dataIn;
 	private String log = "";
+	private boolean isRunning = true;
 	
 	public LogReceiver(DataInputStream dataIn){
 		this.dataIn = dataIn;
@@ -23,8 +24,12 @@ public class LogReceiver extends Thread{
 		}
 	}
 	
+	public void stopRunning(){
+		isRunning = false;
+	}
+	
 	public void run(){
-		while(true){
+		while(isRunning){
 			checkForUpdate();
 		}
 	}

@@ -37,13 +37,9 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	}
 	
 	private void stop(){
-		setVisible(false);
-		try {
-			lr.wait();
-			System.out.print(lr.getLog());
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		//setVisible(false);	
+		lr.stopRunning();
+		System.out.print(lr.getLog());
 		disconnect();
 	}
 
@@ -78,8 +74,6 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 			dataIn = new DataInputStream(link.getInputStream());
 			System.out.println("\nNXT is Connected");   			
 		}
-
-
 	}
 
 	private void sendCommand(Command c){
@@ -119,7 +113,6 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 			sendCommand(Command.STOP_HITCH);
 	}
 
-
 	public void disconnect(){
 		try{
 			dataOut.close();
@@ -130,7 +123,6 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 			System.out.println("\nIO Exception writing bytes");
 		}
 		System.out.println("\nClosed data streams");
-
 	}
 
 	public static void main(String[] args){
