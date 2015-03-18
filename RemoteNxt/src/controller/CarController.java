@@ -45,12 +45,11 @@ public class CarController{
 	public CarController(){
 		init();
 		connect();
-//		rl = new RegulatorUpdater(car, dataOut);
+		r = new Regulator(car, dataOut);
 	}
 
 	public void init(){
 		car = new Car();
-		r = new Regulator(car);
 
 		move = false;
 		turn = false;

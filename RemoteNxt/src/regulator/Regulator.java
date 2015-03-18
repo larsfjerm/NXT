@@ -1,29 +1,34 @@
 package regulator;
 
+import java.io.DataOutputStream;
+
+import log.Logger;
 import car.Car;
 
 public class Regulator extends Thread{
 	private Car car;
-	
-	public Regulator(Car car){
+	private Logger logger;
+
+	public Regulator(Car car, DataOutputStream dataOut){
 		this.car = car;
+		logger = new Logger(dataOut);
 	}
-	
+
 	private double sign(double n){
 		if(n==0){
 			return 1;
 		}
 		return n/Math.abs(n);
 	}
-	
+
 	public double getBeta(double alpha, double psi){
 		double kp = 2;
 		double lb = 0.162;
 		double d = 0.096;
-		
+
 		double gamma;
 		double psiRef;
-		
+
 		double alphaSgn = -1*sign(alpha);
 		if(alpha!=0){
 			double denom = Math.sqrt(Math.pow(d, 2)+lb/Math.pow(Math.tan(alpha),2));
@@ -36,14 +41,24 @@ public class Regulator extends Thread{
 		double errorPsi = psi-psiRef;
 		return kp*errorPsi;
 	}
-	
+
 	public void regulate(){
 		double psi = (car.getHitchAngle() - car.getTrailerAngle())*Math.PI/180;
 		double alpha =  (car.getTurnAngle())*Math.PI/180;
 		double beta = getBeta(alpha, psi)*180/Math.PI;
 		car.turnHitchTo(beta);
+		log(psi,alpha,beta);
 	}
-	
+
+	private void log(double psi, double alpha, double beta){
+		if(logger!=null){
+			logger.writeDouble(psi);
+			logger.writeDouble(alpha);
+			logger.writeDouble(beta);
+			logger.finishLine();
+		}
+	}
+
 	public void run(){
 		while(true){
 			if(car.isMovivingBackward()){

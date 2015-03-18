@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import regulator.Regulator;
 import lejos.pc.comm.NXTConnector;
+import log.LogReceiver;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -21,6 +22,7 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	private  DataOutputStream dataOut;
 	private  DataInputStream dataIn;
 	private  NXTConnector link;
+	private LogReceiver lr;
 	
 //	private Regulator r;
 	
@@ -30,22 +32,27 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 		init();
 	}
 	
-//	public void run(){
-//		while(true){
-//			if(!r.checkForUpdate())
-//				break;
-//			if(r.isReady()){
-//				if(!r.sendUpdate())
-//					break;
-//			}
-//		}
-//	}
+	public void run(){
+		lr.start();
+	}
+	
+	private void stop(){
+		setVisible(false);
+		try {
+			lr.wait();
+			System.out.print(lr.getLog());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		disconnect();
+	}
 
 	public void init(){
 		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		manager.addKeyEventDispatcher(this);
 		pack();
 		setVisible(true);
+		lr = new LogReceiver(dataIn);
 //		r = new Regulator(dataIn, dataOut);
 	}
 
@@ -98,6 +105,9 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 			sendCommand(Command.HITCH_LEFT);
 		if(e.getKeyChar() == 'd')
 			sendCommand(Command.HITCH_RIGHT);
+		if(e.getKeyChar() == KeyEvent.VK_ESCAPE){
+			stop();
+		}
 	}
 
 	private void keyReleased(KeyEvent e) {
@@ -110,8 +120,7 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	}
 
 
-	public void disconnect()
-	{
+	public void disconnect(){
 		try{
 			dataOut.close();
 			dataIn.close();
@@ -126,6 +135,6 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 
 	public static void main(String[] args){
 		Controller c = new Controller();
-//		c.run();
+		c.run();
 	}
 }
