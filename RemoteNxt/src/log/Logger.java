@@ -12,19 +12,25 @@ public class Logger {
 		this.dataOut = dataOut;
 	}
 	
+	boolean firstInLine = true;
+	
 	public void writeDouble(double d){
-		log += d+" ";
+		if(!firstInLine){
+			log += ", ";
+		}
+		log += d;
+		firstInLine = false;
 	}
 	
 	public void finishLine(){
-		log += '\n';
+		log += "\r\n";
+		firstInLine = true;
 		noLines += 1;
 		if(noLines == 10){
 			sendLog();
 			log = "";
 			noLines = 0;
 		}
-		
 	}
 	
 	private void sendLog(){

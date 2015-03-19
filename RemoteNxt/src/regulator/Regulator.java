@@ -66,6 +66,8 @@ public class Regulator extends Thread{
 		while(true){
 			if(car.isMovivingBackward()){
 				regulate();
+			}else if(car.isMovingForward()){
+				car.turnHitchTo(0);
 			}
 		}
 	}

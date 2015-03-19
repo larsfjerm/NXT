@@ -1,9 +1,7 @@
 package car;
 
-import regulator.Regulator;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
-import lejos.nxt.Sound;
 
 public class Car {	
 	private static final int FRONT_LEFT_LIMIT = 30;
@@ -29,7 +27,7 @@ public class Car {
 		angleSensor = new HitchAngleSensor();
 		angleSensor.calibrate(hitch);
 		
-		backwardSpeed = 50;
+		backwardSpeed = 100;
 		forwardSpeed = 200;
 		turnSpeed = 100;
 		hitchSpeed = 100;
@@ -94,12 +92,15 @@ public class Car {
 		}
 	}
 	
+	private boolean movingBackward = false;
+	private boolean movingForward = false;
+	
 	public void moveForward(){
 		backWheels.setSpeed(forwardSpeed);
 		backWheels.forward();
+		movingForward = true;
 	}
 	
-	private boolean movingBackward = false;
 	
 	public void moveBackward(){
 		backWheels.setSpeed(backwardSpeed);
@@ -111,12 +112,13 @@ public class Car {
 		return movingBackward;
 	}
 	
-	public void resetFront(){
-		frontWheels.rotateTo(0);
+	public boolean isMovingForward(){
+		return movingForward;
 	}
 	
 	public void stopMoving(){
 		backWheels.flt();
+		movingForward = false;
 		movingBackward = false;
 	}
 	

@@ -6,7 +6,6 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import regulator.Regulator;
 import lejos.pc.comm.NXTConnector;
 import log.LogReceiver;
 
@@ -24,8 +23,6 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	private  NXTConnector link;
 	private LogReceiver lr;
 	
-//	private Regulator r;
-	
 	public Controller(){ 
 		super("Car controller");
 		connect();
@@ -36,10 +33,9 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 		lr.start();
 	}
 	
-	private void stop(){
-		//setVisible(false);	
+	private void stop(){	
 		lr.stopRunning();
-		System.out.print(lr.getLog());
+		lr.saveLog();
 		disconnect();
 	}
 
@@ -49,7 +45,6 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 		pack();
 		setVisible(true);
 		lr = new LogReceiver(dataIn);
-//		r = new Regulator(dataIn, dataOut);
 	}
 
 	@Override
@@ -95,10 +90,6 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 			sendCommand(Command.LEFT);
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT)
 			sendCommand(Command.RIGHT);
-		if(e.getKeyChar() == 'a')
-			sendCommand(Command.HITCH_LEFT);
-		if(e.getKeyChar() == 'd')
-			sendCommand(Command.HITCH_RIGHT);
 		if(e.getKeyChar() == KeyEvent.VK_ESCAPE){
 			stop();
 		}
@@ -109,8 +100,6 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 			sendCommand(Command.STOP_MOVE);
 		if(e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode()==KeyEvent.VK_RIGHT)
 			sendCommand(Command.STOP_TURN);
-		if(e.getKeyChar() == 'a' || e.getKeyChar() == 'd')
-			sendCommand(Command.STOP_HITCH);
 	}
 
 	public void disconnect(){
