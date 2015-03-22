@@ -8,7 +8,9 @@ import car.Car;
 public class Regulator extends Thread{
 	private Car car;
 	private Logger logger;
-
+	private static double last_psi= 0;
+	
+	
 	public Regulator(Car car, DataOutputStream dataOut){
 		this.car = car;
 		logger = new Logger(dataOut);
@@ -22,24 +24,21 @@ public class Regulator extends Thread{
 	}
 
 	public double getBeta(double alpha, double psi){
-		double kp = 2;
-		double lb = 0.162;
-		double d = 0.096;
+		double kp = 0.3;
+		double kd = 0.1;
 
-		double gamma;
+		
 		double psiRef;
-
-		double alphaSgn = -1*sign(alpha);
-		if(alpha!=0){
-			double denom = Math.sqrt(Math.pow(d, 2)+lb/Math.pow(Math.tan(alpha),2));
-			gamma = Math.acos(-d/denom);
-			psiRef = Math.acos(lb/denom)-gamma;
-		}else{
-			psiRef = 0;
-		}
-		psiRef = psiRef*alphaSgn;
-		double errorPsi = psi-psiRef;
-		return kp*errorPsi;
+		double dpsi = (psi-last_psi/0.1);
+		
+		psiRef = 0;
+		
+		double errorPsi = psiRef-psi;
+		
+		return kp*errorPsi+kd*dpsi;
+		
+		
+		
 	}
 
 	public void regulate(){
@@ -66,7 +65,10 @@ public class Regulator extends Thread{
 		while(true){
 			if(car.isMovivingBackward()){
 				regulate();
+			}else{
+				car.turnHitchTo(0);
 			}
+			
 		}
 	}
 }
