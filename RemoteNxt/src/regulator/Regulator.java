@@ -26,6 +26,7 @@ public class Regulator extends Thread{
 
 	public double getBetaDerivative(double psi){
 		double dpsi = (psi-last_psi/0.1);
+		last_psi = psi;
 		return dpsi;
 	}
 	
