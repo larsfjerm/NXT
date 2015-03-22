@@ -97,9 +97,11 @@ public class Car {
 	public void moveForward(){
 		backWheels.setSpeed(forwardSpeed);
 		backWheels.forward();
+		movingForward  = true;
 	}
 	
 	private boolean movingBackward = false;
+	private boolean movingForward  = false;
 	
 	public void moveBackward(){
 		backWheels.setSpeed(backwardSpeed);
@@ -108,6 +110,11 @@ public class Car {
 	}
 	
 	public boolean isMovivingBackward(){
+		return movingForward;
+	}
+	
+	
+	public boolean isMovingForward(){
 		return movingBackward;
 	}
 	
@@ -118,6 +125,7 @@ public class Car {
 	public void stopMoving(){
 		backWheels.flt();
 		movingBackward = false;
+		movingForward  = false;
 	}
 	
 	

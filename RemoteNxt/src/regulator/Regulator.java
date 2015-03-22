@@ -27,7 +27,6 @@ public class Regulator extends Thread{
 		double kp = 0.3;
 		double kd = 0.1;
 
-		
 		double psiRef;
 		double dpsi = (psi-last_psi/0.1);
 		
@@ -65,10 +64,9 @@ public class Regulator extends Thread{
 		while(true){
 			if(car.isMovivingBackward()){
 				regulate();
-			}else{
+			}else if(car.isMovingForward()){
 				car.turnHitchTo(0);
 			}
-			
 		}
 	}
 }
