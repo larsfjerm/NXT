@@ -39,6 +39,20 @@ public class Car {
 		hitch.setSpeed(hitchSpeed);
 	}
 	
+	
+	public void setHitchDegPerSec(float rotationDegSec){
+		if(rotationDegSec > 0){
+			turnHitchLeft();
+			hitch.setSpeed(Math.abs(rotationDegSec));
+		}else if(rotationDegSec < 0){
+			turnHitchRight();
+			hitch.setSpeed(Math.abs(rotationDegSec));
+		}else{
+			hitch.setSpeed(0);
+		}
+	}
+	
+	
 	public void turnLeft(){
 		if(frontWheels.getTachoCount()<FRONT_LEFT_LIMIT){
 			frontWheels.forward();
