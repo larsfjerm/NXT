@@ -110,12 +110,12 @@ public class Car {
 	}
 	
 	public boolean isMovivingBackward(){
-		return movingForward;
+		return movingBackward;
 	}
 	
 	
 	public boolean isMovingForward(){
-		return movingBackward;
+		return movingForward;
 	}
 	
 	public void resetFront(){

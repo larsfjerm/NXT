@@ -16,28 +16,17 @@ public class Regulator extends Thread{
 		logger = new Logger(dataOut);
 	}
 
-	private double sign(double n){
-		if(n==0){
-			return 1;
-		}
-		return n/Math.abs(n);
-	}
-
 	public double getBeta(double alpha, double psi){
-		double kp = 0.3;
-		double kd = 0.1;
+		double kp = 2;
+		double kd = 0;
 
 		double psiRef;
 		double dpsi = (psi-last_psi/0.1);
 		
 		psiRef = 0;
 		
-		double errorPsi = psiRef-psi;
-		
+		double errorPsi = psi-psiRef;
 		return kp*errorPsi+kd*dpsi;
-		
-		
-		
 	}
 
 	public void regulate(){
@@ -62,11 +51,14 @@ public class Regulator extends Thread{
 
 	public void run(){
 		while(true){
-			if(car.isMovivingBackward()){
-				regulate();
-			}else if(car.isMovingForward()){
-				car.turnHitchTo(0);
-			}
+			regulate();
+			
+//			if(car.isMovivingBackward()){
+//				regulate();
+//			}
+//			else if(car.isMovingForward()){
+//				car.turnHitchTo(0);
+//			}
 		}
 	}
 }
