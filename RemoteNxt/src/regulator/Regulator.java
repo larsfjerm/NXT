@@ -8,9 +8,13 @@ import car.Car;
 public class Regulator extends Thread{
 	private Car car;
 	private Logger logger;
+	
 	private static double last_psi= 0;
-	private static double kp = 2;
-	private static double kd = 0;
+	private static double kp = 1;			 // Tuning propotional
+	private static double kd = 0;			 // Tuning derivative 
+	private static double kalmanGain = 0.1;  // Tuningparameter for observer
+	private static double observerAdjust = 0;
+	
 	
 	public Regulator(Car car, DataOutputStream dataOut){
 		this.car = car;
@@ -18,7 +22,6 @@ public class Regulator extends Thread{
 	}
 
 	public double getBetaPropotional(double psi){
-		
 		double psiRef = 0;
 		double errorPsi = psi-psiRef;
 		return errorPsi;
@@ -31,11 +34,28 @@ public class Regulator extends Thread{
 	}
 	
 	
+//	public double Observer(double dbeta,double psi){
+//		double d_h  = 0.0450; 
+//	    double d_b  = 0.0510;
+//		double l_h  = 0.11;
+//		double V 	= -0.1;
+//	    double dt   = 0.1;
+//		
+//		double u = dbeta;
+//		double B = (d_h/l_h);
+//		double A = -V/l_h;
+//		
+//		double psi_hat = A*last_psi*dt+B*dt*u+observerAdjust;
+//		observerAdjust = (psi-psi_hat)*kalmanGain;
+//	}
+	
+	
 	public void regulate(){
 		double psiDeg = car.getHitchAngle() - car.getTrailerAngle();
 		double psiRad = psiDeg*Math.PI/180;
-		double alphaDeg =  car.getTurnAngle();
-		double alphaRad = alphaDeg*Math.PI/180;
+		
+//		double alphaDeg =  car.getTurnAngle();
+//		double alphaRad = alphaDeg*Math.PI/180;
 		
 		double dBetaP = getBetaPropotional(psiRad);
 		double dBetaD = getBetaDerivative(psiRad);
