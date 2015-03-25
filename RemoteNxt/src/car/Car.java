@@ -67,7 +67,6 @@ public class Car {
 		}
 	}
 	
-	
 	public void turnHitchLeft(){
 		if(hitch.getTachoCount()<HITCH_LEFT_LIMIT){
 			hitch.forward();
@@ -77,6 +76,20 @@ public class Car {
 	public void turnHitchRight(){
 		if(hitch.getTachoCount()>HITCH_RIGHT_LIMIT){
 			hitch.backward();
+		}
+	}
+	
+	public void setHitchDegPerSec(float hitchDegSec){
+		float l1 = (float) 0.8;									//radius motor drev
+		float l2 = (float) 2.4;									//radius stort drev
+ 		float motorDegSec = (l2/l1)*hitchDegSec;		//motor
+		
+ 		hitch.setSpeed(motorDegSec);
+ 		
+		if(motorDegSec > 0){
+			hitch.rotateTo(HITCH_LEFT_LIMIT);
+		}else if(motorDegSec < 0){		
+			hitch.rotateTo(HITCH_RIGHT_LIMIT);
 		}
 	}
 	
