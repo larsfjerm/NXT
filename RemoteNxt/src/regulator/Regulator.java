@@ -10,8 +10,13 @@ public class Regulator extends Thread{
 	private Logger logger;
 	
 	private static double last_psi= 0;
-	private static double kp = 1;			 // Tuning propotional
-	private static double kd = 0;			 // Tuning derivative 
+	
+	   
+
+	
+	private static double k1 = 8.4883;			 // Tuning propotional
+	private static double k2 = -1.2537;			 // Tuning derivative 
+	
 	private static double kalmanGain = 0.1;  // Tuningparameter for observer
 	private static double observerAdjust = 0;
 	
@@ -21,16 +26,8 @@ public class Regulator extends Thread{
 		logger = new Logger(dataOut);
 	}
 
-	public double getBetaPropotional(double psi){
-		double psiRef = 0;
-		double errorPsi = psi-psiRef;
-		return errorPsi;
-	}
-
-	public double getBetaDerivative(double psi){
-		double dpsi = (psi-last_psi/0.1);
-		last_psi = psi;
-		return dpsi;
+	public double getdBeta(double psi,double beta){
+		return psi*k1+beta*k2;
 	}
 	
 	
@@ -54,25 +51,23 @@ public class Regulator extends Thread{
 		double psiDeg = car.getHitchAngle() - car.getTrailerAngle();
 		double psiRad = psiDeg*Math.PI/180;
 		
+		double betaDeg = 0;
+		double betaRad = 0;
+		
 //		double alphaDeg =  car.getTurnAngle();
 //		double alphaRad = alphaDeg*Math.PI/180;
 		
-		double dBetaP = getBetaPropotional(psiRad);
-		double dBetaD = getBetaDerivative(psiRad);
-		 
-		
-		double dBetaDeg = (kp*dBetaP+kd*dBetaD)*180/Math.PI;
+		double dBetaDeg = getdBeta(psiRad,betaRad)*180/Math.PI;
 		
 		car.setHitchDegPerSec((float)dBetaDeg);
-		log(psiDeg,dBetaP,dBetaD,dBetaDeg);
+		log(psiDeg,betaDeg,dBetaDeg);
 	}
 
-	private void log(double psi, double dBetaP, double dBetaD, double dBeta){
+	private void log(double psi, double beta, double dbeta ){
 		if(logger!=null){
 			logger.writeDouble(psi);
-			logger.writeDouble(dBetaP);
-			logger.writeDouble(dBetaD);
-			logger.writeDouble(dBeta);
+			logger.writeDouble(beta);
+			logger.writeDouble(dbeta);
 			logger.finishLine();
 		}
 	}
