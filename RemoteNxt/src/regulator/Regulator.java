@@ -9,66 +9,81 @@ public class Regulator extends Thread{
 	private Car car;
 	private Logger logger;
 
+	private static double last_psi= 0;
+
+
+
+
+	private static double k1 = 8.4883;			 // Tuning propotional
+	private static double k2 = -1.2537;			 // Tuning derivative 
+
+	private static double kalmanGain = 0.1;  // Tuningparameter for observer
+	private static double observerAdjust = 0;
+
+
 	public Regulator(Car car, DataOutputStream dataOut){
 		this.car = car;
 		logger = new Logger(dataOut);
 	}
 
-	private double sign(double n){
-		if(n==0){
-			return 1;
-		}
-		return n/Math.abs(n);
+	public double getdBeta(double psi,double beta){
+		return psi*k1+beta*k2;
 	}
 
-	public double getBeta(double alpha, double psi){
-		double kp = 2;
-		double lb = 0.162;
-		double d = 0.096;
 
-		double gamma;
-		double psiRef;
+	//	public double Observer(double dbeta,double psi){
+	//		double d_h  = 0.0450; 
+	//	    double d_b  = 0.0510;
+	//		double l_h  = 0.11;
+	//		double V 	= -0.1;
+	//	    double dt   = 0.1;
+	//		
+	//		double u = dbeta;
+	//		double B = (d_h/l_h);
+	//		double A = -V/l_h;
+	//		
+	//		double psi_hat = A*last_psi*dt+B*dt*u+observerAdjust;
+	//		observerAdjust = (psi-psi_hat)*kalmanGain;
+	//	}
 
-		double alphaSgn = -1*sign(alpha);
-		if(alpha!=0){
-			double denom = Math.sqrt(Math.pow(d, 2)+lb/Math.pow(Math.tan(alpha),2));
-			gamma = Math.acos(-d/denom);
-			psiRef = Math.acos(lb/denom)-gamma;
-		}else{
-			psiRef = 0;
-		}
-		psiRef = psiRef*alphaSgn;
-		double errorPsi = psi-psiRef;
-		return kp*errorPsi;
-	}
 
 	public void regulate(){
 		double psiDeg = car.getHitchAngle() - car.getTrailerAngle();
 		double psiRad = psiDeg*Math.PI/180;
-		double alphaDeg =  car.getTurnAngle();
-		double alphaRad = alphaDeg*Math.PI/180;
-		double betaRad = getBeta(alphaRad, psiRad);
-		double betaDeg = betaRad*180/Math.PI;
-		car.turnHitchTo(betaDeg);
-		log(psiDeg,alphaDeg,betaDeg);
+
+		double betaDeg = 0;
+		double betaRad = 0;
+
+		//		double alphaDeg =  car.getTurnAngle();
+		//		double alphaRad = alphaDeg*Math.PI/180;
+
+		double dBetaDeg = getdBeta(psiRad,betaRad)*180/Math.PI;
+
+		car.setHitchDegPerSec((float)dBetaDeg);
+		log(psiDeg,betaDeg,dBetaDeg);
 	}
 
-	private void log(double psi, double alpha, double beta){
+	private void log(double psi, double beta, double dbeta ){
 		if(logger!=null){
 			logger.writeDouble(psi);
-			logger.writeDouble(alpha);
 			logger.writeDouble(beta);
+			logger.writeDouble(dbeta);
 			logger.finishLine();
 		}
 	}
 
 	public void run(){
 		while(true){
-			if(car.isMovivingBackward()){
-				regulate();
-			}else if(car.isMovingForward()){
-				car.turnHitchTo(0);
-			}
+
+			regulate();
+
+			//			if(car.isMovivingBackward()){
+			//				regulate();
+			//			}
+			//			else if(car.isMovingForward()){
+			//				car.turnHitchTo(0);
+			//			}
+
 		}
 	}
 }
