@@ -45,14 +45,12 @@ public class Car {
 		float l2 = (float) 2.4;									//radius stort drev
  		float motorDegSec = (l2/l1)*hitchDegSec;		//motor
 		
+ 		hitch.setSpeed(motorDegSec);
+ 		
 		if(motorDegSec > 0){
-			turnHitchLeft();
-			hitch.setSpeed(Math.abs(motorDegSec));
-		}else if(motorDegSec < 0){
-			turnHitchRight();
-			hitch.setSpeed(Math.abs(motorDegSec));
-		}else{
-			hitch.setSpeed(0);
+			hitch.rotateTo(HITCH_LEFT_LIMIT);
+		}else if(motorDegSec < 0){		
+			hitch.rotateTo(HITCH_RIGHT_LIMIT);
 		}
 	}
 	
