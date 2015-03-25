@@ -40,13 +40,17 @@ public class Car {
 	}
 	
 	
-	public void setHitchDegPerSec(float rotationDegSec){
-		if(rotationDegSec > 0){
+	public void setHitchDegPerSec(float hitchDegSec){
+		float l1 = (float) 0.8;									//radius motor drev
+		float l2 = (float) 2.4;									//radius stort drev
+ 		float motorDegSec = (l2/l1)*hitchDegSec;		//motor
+		
+		if(motorDegSec > 0){
 			turnHitchLeft();
-			hitch.setSpeed(Math.abs(rotationDegSec));
-		}else if(rotationDegSec < 0){
+			hitch.setSpeed(Math.abs(motorDegSec));
+		}else if(motorDegSec < 0){
 			turnHitchRight();
-			hitch.setSpeed(Math.abs(rotationDegSec));
+			hitch.setSpeed(Math.abs(motorDegSec));
 		}else{
 			hitch.setSpeed(0);
 		}
