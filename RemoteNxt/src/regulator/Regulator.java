@@ -14,8 +14,8 @@ public class Regulator extends Thread{
 
 
 
-	private static double k1 = 8.4883;			 // Tuning propotional
-	private static double k2 = -1.2537;			 // Tuning derivative 
+	private static double k1 = -11.4929;			 // Tuning propotional
+	private static double k2 = 1.1609;			 // Tuning derivative 
 
 	private static double kalmanGain = 0.1;  // Tuningparameter for observer
 	private static double observerAdjust = 0;
@@ -51,8 +51,8 @@ public class Regulator extends Thread{
 		double psiDeg = car.getHitchAngle() - car.getTrailerAngle();
 		double psiRad = psiDeg*Math.PI/180;
 
-		double betaDeg = 0;
-		double betaRad = 0;
+		double betaDeg = car.getHitchAngle();
+		double betaRad = betaDeg*Math.PI/180;
 
 		//		double alphaDeg =  car.getTurnAngle();
 		//		double alphaRad = alphaDeg*Math.PI/180;
