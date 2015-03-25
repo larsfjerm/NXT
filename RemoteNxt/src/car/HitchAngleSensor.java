@@ -26,31 +26,37 @@ public class HitchAngleSensor {
 	public void calibrate(NXTRegulatedMotor hitch){
 		System.out.println("Press button to start hitch sensor calibration.");
 		Button.waitForAnyPress();
+		
 		hitch.rotateTo(minAngl);
+		sleep(500);
 		s.calibrateLow();
-		sleep(200);
+		sleep(500);
+		
 		hitch.rotateTo(maxAngl);
+		sleep(500);
 		s.calibrateHigh();
+		sleep(500);
+		
 		for(int i = 0; i <= degrees; i++){
-			result[i] = getLightValue();
+			result[i] = getLightValue(10);
 			hitch.rotateTo(maxAngl-i*step);
 		}
 		hitch.rotateTo(0);
 		System.out.println("Hitch sensor calibration done.");
 	}
 
-	private float getLightValue(){
+	private float getLightValue(int ms){
 		int sum = 0;
 		for(int i = 0; i < 10; i++){
 			sum += s.getLightValue();
-			sleep(10);
+			sleep(ms);
 		}
 		return sum/10;
 	}
 	
 	public int getAngle() {
 		float[] a = result;
-		float x = getLightValue();
+		float x = getLightValue(0);
 		
 	    int low = 0;
 	    int high = result.length - 1;
@@ -63,6 +69,7 @@ public class HitchAngleSensor {
 	        if (d2 <= d1)
 	        {
 	            low = mid+1;
+	        	//high = mid+1;
 	        }
 	        else
 	        {

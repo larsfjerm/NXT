@@ -46,6 +46,10 @@ public class Regulator extends Thread{
 	//		double psi_hat = A*last_psi*dt+B*dt*u+observerAdjust;
 	//		observerAdjust = (psi-psi_hat)*kalmanGain;
 	//	}
+	
+	private double getPsi() {
+		return car.getHitchAngle() - car.getTrailerAngle();
+	}
 
 	public void regulate(){
 		double psiDeg = car.getHitchAngle() - car.getTrailerAngle();
@@ -76,8 +80,16 @@ public class Regulator extends Thread{
 
 	public void run(){
 		startTime = System.currentTimeMillis();
+		log(getPsi(), car.getHitchAngle(), 0);
 		while(true){
 			regulate();
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			//			if(car.isMovivingBackward()){
 			//				regulate();

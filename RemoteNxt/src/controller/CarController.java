@@ -44,8 +44,6 @@ public class CarController{
 		init();
 		connect();
 		r = new Regulator(car, dataOut);
-		
-		car.testHitch();
 	}
 
 	public void init(){

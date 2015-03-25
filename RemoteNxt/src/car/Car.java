@@ -161,6 +161,7 @@ public class Car {
 	}
 	
 	public float getHitchAngle(){
+		//return hitch.getTachoCount();
 		return hitch.getTachoCount()/HITCH_RATIO;
 	}
 	
