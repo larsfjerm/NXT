@@ -111,7 +111,7 @@ public class Car {
 	public boolean isMovivingBackward(){
 		return movingBackward;
 	}
-	
+
 	public boolean isMovingForward(){
 		return movingForward;
 	}
@@ -121,7 +121,6 @@ public class Car {
 		movingForward = false;
 		movingBackward = false;
 	}
-	
 	
 	public void stopTurning(){
 		frontWheels.stop();
