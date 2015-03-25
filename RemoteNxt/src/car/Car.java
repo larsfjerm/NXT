@@ -27,7 +27,7 @@ public class Car {
 		angleSensor = new HitchAngleSensor();
 		//angleSensor.calibrate(hitch);
 		
-		backwardSpeed = 100;
+		backwardSpeed = 200;
 		forwardSpeed = 200;
 		turnSpeed = 100;
 		hitchSpeed = 100;
