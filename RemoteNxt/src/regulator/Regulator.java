@@ -8,7 +8,10 @@ import car.Car;
 public class Regulator extends Thread{
 	private Car car;
 	private Logger logger;
-
+	
+	private static double startTime;
+	private static double currentTime;
+	
 	private static double last_psi= 0;
 
 	private static double k1 = -11.4929;			 // Tuning propotional
@@ -59,6 +62,8 @@ public class Regulator extends Thread{
 
 	private void log(double psi, double beta, double dbeta ){
 		if(logger!=null){
+			currentTime = (System.currentTimeMillis()-startTime)*0.001;
+			logger.writeDouble((double)currentTime);
 			logger.writeDouble(psi);
 			logger.writeDouble(beta);
 			logger.writeDouble(dbeta);
@@ -67,8 +72,8 @@ public class Regulator extends Thread{
 	}
 
 	public void run(){
+		startTime = System.currentTimeMillis();
 		while(true){
-
 			regulate();
 
 			//			if(car.isMovivingBackward()){
