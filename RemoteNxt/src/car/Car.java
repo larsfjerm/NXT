@@ -39,7 +39,6 @@ public class Car {
 		hitch.setSpeed(hitchSpeed);
 	}
 	
-	
 	public void setHitchDegPerSec(float hitchDegSec){
 		float l1 = (float) 0.8;									//radius motor drev
 		float l2 = (float) 2.4;									//radius stort drev
@@ -53,7 +52,6 @@ public class Car {
 			hitch.rotateTo(HITCH_RIGHT_LIMIT);
 		}
 	}
-	
 	
 	public void turnLeft(){
 		if(frontWheels.getTachoCount()<FRONT_LEFT_LIMIT){
