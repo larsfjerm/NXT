@@ -11,25 +11,38 @@ public class LogReceiver extends Thread{
 	private String log = "";
 	private boolean isRunning = true;
 	
+	public LogReceiver() {}
+	
 	public LogReceiver(DataInputStream dataIn){
 		this.dataIn = dataIn;
 	}
 	
+	public void test() {
+		try {
+			PrintWriter out = new PrintWriter("filename.csv");
+			out.println("test22");
+			out.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void saveLog(){
 		System.out.println("Filename: ");
-		Scanner s = new Scanner(System.in);
-		String filename = s.nextLine();
+//		Scanner s = new Scanner(System.in);
+//		String filename = s.nextLine();
 		try {
-			PrintWriter pw = new PrintWriter(filename+".csv");
-			pw.write("Psi, Alpha, Beta\r\n");
-			pw.write(log);
+			PrintWriter pw = new PrintWriter("test.csv");
+			pw.println("Psi, Alpha, Beta\r\n");
+			pw.println(log);
 			pw.flush();
 			pw.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		s.close();
+		//s.close();
 	}
 	
 	private void checkForUpdate(){

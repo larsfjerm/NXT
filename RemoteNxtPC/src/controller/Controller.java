@@ -113,9 +113,4 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 		}
 		System.out.println("\nClosed data streams");
 	}
-
-	public static void main(String[] args){
-		Controller c = new Controller();
-		c.run();
-	}
 }

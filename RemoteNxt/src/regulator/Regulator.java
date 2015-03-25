@@ -11,15 +11,11 @@ public class Regulator extends Thread{
 
 	private static double last_psi= 0;
 
-
-
-
 	private static double k1 = 8.4883;			 // Tuning propotional
 	private static double k2 = -1.2537;			 // Tuning derivative 
 
 	private static double kalmanGain = 0.1;  // Tuningparameter for observer
 	private static double observerAdjust = 0;
-
 
 	public Regulator(Car car, DataOutputStream dataOut){
 		this.car = car;
@@ -29,7 +25,6 @@ public class Regulator extends Thread{
 	public double getdBeta(double psi,double beta){
 		return psi*k1+beta*k2;
 	}
-
 
 	//	public double Observer(double dbeta,double psi){
 	//		double d_h  = 0.0450; 
@@ -45,7 +40,6 @@ public class Regulator extends Thread{
 	//		double psi_hat = A*last_psi*dt+B*dt*u+observerAdjust;
 	//		observerAdjust = (psi-psi_hat)*kalmanGain;
 	//	}
-
 
 	public void regulate(){
 		double psiDeg = car.getHitchAngle() - car.getTrailerAngle();
