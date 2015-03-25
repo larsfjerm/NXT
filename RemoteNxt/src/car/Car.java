@@ -25,7 +25,7 @@ public class Car {
 		frontWheels = Motor.B;
 		hitch = Motor.A;
 		angleSensor = new HitchAngleSensor();
-		angleSensor.calibrate(hitch);
+		//angleSensor.calibrate(hitch);
 		
 		backwardSpeed = 100;
 		forwardSpeed = 200;

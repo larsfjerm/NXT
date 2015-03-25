@@ -29,8 +29,7 @@ public class LogReceiver extends Thread{
 	}
 	
 	public void saveLog(){
-		System.out.println("Filename: ");
-//		Scanner s = new Scanner(System.in);
+		//		Scanner s = new Scanner(System.in);
 //		String filename = s.nextLine();
 		try {
 			PrintWriter pw = new PrintWriter("test.csv");
@@ -38,6 +37,7 @@ public class LogReceiver extends Thread{
 			pw.println(log);
 			pw.flush();
 			pw.close();
+			System.out.println("Saved to file");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
