@@ -17,17 +17,6 @@ public class LogReceiver extends Thread{
 		this.dataIn = dataIn;
 	}
 	
-	public void test() {
-		try {
-			PrintWriter out = new PrintWriter("filename.csv");
-			out.println("test22");
-			out.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	public void saveLog(){
 		//		Scanner s = new Scanner(System.in);
 //		String filename = s.nextLine();

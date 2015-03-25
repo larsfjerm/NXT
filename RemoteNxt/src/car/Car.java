@@ -25,7 +25,12 @@ public class Car {
 		frontWheels = Motor.B;
 		hitch = Motor.A;
 		angleSensor = new HitchAngleSensor();
-		//angleSensor.calibrate(hitch);
+		
+		// TODO uncomment
+		angleSensor.calibrate(hitch);
+		
+		// TODO remove
+		//hitch.rotateTo(0);
 		
 		backwardSpeed = 200;
 		forwardSpeed = 200;
@@ -35,6 +40,10 @@ public class Car {
 		backWheels.setSpeed(forwardSpeed);
 		frontWheels.setSpeed(turnSpeed);
 		hitch.setSpeed(hitchSpeed);
+	}
+	
+	public void testHitch() {
+		hitch.rotateTo(HITCH_LEFT_LIMIT);
 	}
 	
 	public void turnLeft(){

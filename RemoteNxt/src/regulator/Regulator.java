@@ -11,9 +11,12 @@ public class Regulator extends Thread{
 
 	private static double last_psi= 0;
 
-	private static double k1 = -11.4929;			 // Tuning propotional
-	private static double k2 = 1.1609;			 // Tuning derivative 
+//	private static double k1 = -11.4929;			 // Tuning propotional
+//	private static double k2 = 1.1609;			 // Tuning derivative 
 
+	private static double k1 = 0;
+	private static double k2 = 0;
+	
 	private static double kalmanGain = 0.1;  // Tuningparameter for observer
 	private static double observerAdjust = 0;
 
