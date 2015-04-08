@@ -56,7 +56,7 @@ public class HitchAngleSensor {
 	
 	public int getAngle() {
 		float[] a = result;
-		float x = getLightValue(0);
+		float x = getLightValue(10);
 		
 	    int low = 0;
 	    int high = result.length - 1;

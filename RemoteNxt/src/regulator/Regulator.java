@@ -83,13 +83,6 @@ public class Regulator extends Thread{
 		log(getPsi(), car.getHitchAngle(), 0);
 		while(true){
 			regulate();
-			
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
 			//			if(car.isMovivingBackward()){
 			//				regulate();

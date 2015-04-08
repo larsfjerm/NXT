@@ -8,7 +8,7 @@ public class Car {
 	private static final int FRONT_RIGHT_LIMIT = -30;
 	private static final int HITCH_LEFT_LIMIT = 120;
 	private static final int HITCH_RIGHT_LIMIT = -120;
-	private static final int HITCH_RATIO = 90/39;
+	private static final float HITCH_RATIO = 56/16;
 	
 	private NXTRegulatedMotor backWheels;
 	private NXTRegulatedMotor frontWheels;
@@ -88,16 +88,17 @@ public class Car {
 		}
 	}
 	
-	public void setHitchDegPerSec(float hitchDegSec){
-		float l1 = (float) 0.8;									//radius motor drev
-		float l2 = (float) 2.4;									//radius stort drev
- 		float motorDegSec = (l2/l1)*hitchDegSec;		//motor
-		
+	public void setHitchDegPerSec(float hitchDegSec){		
+ 		float motorDegSec = HITCH_RATIO*Math.abs(hitchDegSec);		//motor
  		hitch.setSpeed(motorDegSec);
+ 		
+ 		if(hitch.isMoving()){
+ 			hitch.stop();
+ 		}
  		
 		if(motorDegSec > 0){
 			hitch.rotateTo(HITCH_LEFT_LIMIT);
-		}else if(motorDegSec < 0){		
+		}else{		
 			hitch.rotateTo(HITCH_RIGHT_LIMIT);
 		}
 	}
