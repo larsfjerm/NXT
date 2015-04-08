@@ -61,9 +61,9 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	{
 		link = new NXTConnector();
 
-		if (!link.connectTo("btspp://"))
-		{
-			System.out.println("\nNo NXT find using bluetooth");
+//		if(!link.connectTo("btspp://")){
+		if(!link.connectTo("usb://")){
+			System.out.println("\nCannot connect to NXT.");
 		}else{
 			dataOut = new DataOutputStream(link.getOutputStream());
 			dataIn = new DataInputStream(link.getInputStream());

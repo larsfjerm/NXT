@@ -57,10 +57,11 @@ public class CarController{
 
 	public void connect(){  
 		System.out.println("Waiting for connection...");
-		BTConnection BTLink = Bluetooth.waitForConnection();    
+//		BTConnection link = Bluetooth.waitForConnection();
+		USBConnection link = USB.waitForConnection();
 		System.out.println("Connected.");
-		dataOut = BTLink.openDataOutputStream();
-		dataIn = BTLink.openDataInputStream();
+		dataOut = link.openDataOutputStream();
+		dataIn = link.openDataInputStream();
 	}
 
 	public void run(){
