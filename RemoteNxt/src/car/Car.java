@@ -2,6 +2,7 @@ package car;
 
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
+import lejos.nxt.Sound;
 
 public class Car {	
 	private static final int FRONT_LEFT_LIMIT = 30;
@@ -96,10 +97,13 @@ public class Car {
  			hitch.stop();
  		}
  		
-		if(motorDegSec > 0){
-			hitch.rotateTo(HITCH_LEFT_LIMIT);
-		}else{		
-			hitch.rotateTo(HITCH_RIGHT_LIMIT);
+		if(hitchDegSec > 0){
+			if(hitch.getTachoCount() > HITCH_RIGHT_LIMIT)
+				hitch.backward();
+		}else{
+			if(hitch.getTachoCount() < HITCH_LEFT_LIMIT){
+				hitch.forward();			
+			}
 		}
 	}
 	
@@ -153,21 +157,25 @@ public class Car {
 		hitch.stop();
 	}
 	
-	public float getTrailerAngle(){
-		return -angleSensor.getAngle();
-	}
 	
 	public float getTurnAngle(){
 		return frontWheels.getTachoCount();
 	}
 	
 	public float getHitchAngle(){
-		//return hitch.getTachoCount();
 		return -hitch.getTachoCount()/HITCH_RATIO;
+	}
+	
+	public float getTrailerAngle(){
+		return (float)angleSensor.getAngle();
 	}
 	
 	public float[] getResult(){
 		return angleSensor.getResult();
+	}
+	
+	public float getPsi(){
+		return getTrailerAngle() - getHitchAngle();
 	}
 	
 	public NXTRegulatedMotor getHitch(){

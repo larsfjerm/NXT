@@ -11,17 +11,9 @@ public class Regulator extends Thread{
 	
 	private static double startTime;
 	private static double currentTime;
-	
-//	private static double last_psi= 0;
 
-//	private static double k1 = -11.4929;		 // Tuning propotional
-//	private static double k2 = 1.1609;			 // Tuning derivative 
-
-	private static double k1 = 0;
-	private static double k2 = 0;
-	
-//	private static double kalmanGain = 0.1;  // Tuningparameter for observer
-//	private static double observerAdjust = 0;
+	private static double k1 = 9.8716;
+	private static double k2 = -0.83;
 
 	public Regulator(Car car, DataOutputStream dataOut){
 		this.car = car;
@@ -32,27 +24,27 @@ public class Regulator extends Thread{
 		return psi*k1+beta*k2;
 	}
 
-	//	public double Observer(double dbeta,double psi){
-	//		double d_h  = 0.0450; 
-	//	    double d_b  = 0.0510;
-	//		double l_h  = 0.11;
-	//		double V 	= -0.1;
-	//	    double dt   = 0.1;
-	//		
-	//		double u = dbeta;
-	//		double B = (d_h/l_h);
-	//		double A = -V/l_h;
-	//		
-	//		double psi_hat = A*last_psi*dt+B*dt*u+observerAdjust;
-	//		observerAdjust = (psi-psi_hat)*kalmanGain;
-	//	}
-	
-	private double getPsi() {
-		return car.getHitchAngle() - car.getTrailerAngle();
+	private double last_psi= 0;
+	private double kalmanGain = 0.1;  // Tuningparameter for observer
+	private double observerAdjust = 0;	
+
+	public double Observer(double dbeta, double psi){
+		//Skal få inn vinkelene i grader. 
+		
+		double boolV = 0; //Enten null eller en
+		// Tilsvarer en hastighet V = -0.136 som er motorspeed = 200
+		double A = 1.2364;
+		double B = -0.0435;
+		
+		// Utregning av tilpassning til sensorverder
+		observerAdjust = (psi-last_psi)*kalmanGain;
+		// Finner neste psi
+		last_psi = last_psi+B*dbeta+observerAdjust;
+		return last_psi;
 	}
 
 	public void regulate(){
-		double psiDeg = car.getHitchAngle() - car.getTrailerAngle();
+		double psiDeg = car.getPsi();
 		double psiRad = psiDeg*Math.PI/180;
 
 		double betaDeg = car.getHitchAngle();
@@ -62,7 +54,7 @@ public class Regulator extends Thread{
 		//		double alphaRad = alphaDeg*Math.PI/180;
 
 		double dBetaDeg = getdBeta(psiRad,betaRad)*180/Math.PI;
-
+		
 		car.setHitchDegPerSec((float)dBetaDeg);
 		log(psiDeg,betaDeg,dBetaDeg);
 	}
@@ -80,10 +72,16 @@ public class Regulator extends Thread{
 
 	public void run(){
 		startTime = System.currentTimeMillis();
-		log(getPsi(), car.getHitchAngle(), 0);
+		log(car.getPsi(), car.getHitchAngle(), 0);
 		while(true){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			car.checkHitchLimit();
 			regulate();
-
+			
 			//			if(car.isMovivingBackward()){
 			//				regulate();
 			//			}

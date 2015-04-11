@@ -36,23 +36,19 @@ public class CarController{
 
 	private boolean move;
 	private boolean turn;
-	private boolean hitchTurn;
 	private Car car;
 	private Regulator r;
 
 	public CarController(){
 		init();
-		connect();
-		r = new Regulator(car, dataOut);
 	}
 
 	public void init(){
 		car = new Car();
-
 		move = false;
 		turn = false;
-		hitchTurn = false;
-	
+		connect();
+		r = new Regulator(car, dataOut);
 	}
 
 	public void connect(){  
@@ -66,7 +62,8 @@ public class CarController{
 
 	public void run(){
 		r.start();
-		while(checkCommand()){}
+		car.moveBackward();
+//		while(checkCommand()){}
 	}
 
 	public boolean checkCommand(){

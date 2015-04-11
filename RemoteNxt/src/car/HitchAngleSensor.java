@@ -8,8 +8,9 @@ import lejos.nxt.SensorPort;
 public class HitchAngleSensor {
 	private int minAngl;
 	private int maxAngl;
-	private int degrees;
-	private int step;
+	private int numSteps;
+	private int stepLength;
+	private int angles;
 	
 	private float[] result;
 	private LightSensor s;
@@ -17,29 +18,29 @@ public class HitchAngleSensor {
 	public HitchAngleSensor(){
 		minAngl = -120;
 		maxAngl = 120;
-		degrees = 80;
-		step = (maxAngl-minAngl)/degrees;
-		result = new float[degrees+1];
+		numSteps = 20;
+		angles = 60;
+		stepLength = (maxAngl-minAngl)/(numSteps*2);
+		result = new float[numSteps*2+1];
 		s = new LightSensor(SensorPort.S1);
 	}
 	
 	public void calibrate(NXTRegulatedMotor hitch){
-		System.out.println("Press button to start hitch sensor calibration.");
-		Button.waitForAnyPress();
+//		System.out.println("Press button to start hitch sensor calibration.");
+//		Button.waitForAnyPress();
 		
 		hitch.rotateTo(minAngl);
 		sleep(500);
 		s.calibrateLow();
 		sleep(500);
-		
 		hitch.rotateTo(maxAngl);
 		sleep(500);
 		s.calibrateHigh();
 		sleep(500);
 		
-		for(int i = 0; i <= degrees; i++){
+		for(int i = 0; i <= numSteps*2; i++){
 			result[i] = getLightValue(10);
-			hitch.rotateTo(maxAngl-i*step);
+			hitch.rotateTo(maxAngl-i*stepLength);
 		}
 		hitch.rotateTo(0);
 		System.out.println("Hitch sensor calibration done.");
@@ -54,30 +55,71 @@ public class HitchAngleSensor {
 		return sum/10;
 	}
 	
-	public int getAngle() {
-		float[] a = result;
+	public double getAngle(){
 		float x = getLightValue(0);
+		float r = (float)angles/(float)numSteps;
 		
-	    int low = 0;
-	    int high = result.length - 1;
-
-	    while (low < high) {
-	        int mid = (low + high) / 2;
-	        assert(mid < high);
-	        float d1 = Math.abs(a[mid  ] - x);
-	        float d2 = Math.abs(a[mid+1] - x);
-	        if (d2 <= d1)
-	        {
-	            low = mid+1;
-	        	//high = mid+1;
-	        }
-	        else
-	        {
-	            high = mid;
-	        }
-	    }
-	    return degrees/2-high+1;
+		int i,j;
+		if(x > result[numSteps]){
+			i = 0;
+			while(x<result[i]){
+				i++;
+			}
+			j = i;
+			if(i > 0){
+				j -= 1;
+			}else{
+				return i*r-angles;
+			}			
+		}else{
+			i = numSteps*2;
+			while(x>result[i]){
+				i--;
+			}
+			j = i;
+			if(i < numSteps*2){
+				j += 1;
+			}else{
+				return i*r-angles;
+			}
+		}
+		
+		double y1 = i*r-angles;
+		double y2 = j*r-angles;
+		double x1 = result[i];
+		double x2 = result[j];
+		
+		if(x2==x1){
+			return y1;
+		}
+		
+		return y1+(y2-y1)*(x-x1)/(x2-x1);
 	}
+	
+//	public int getAngle() {
+//		float[] a = result;
+//		float x = getLightValue(0);
+//		
+//	    int low = 0;
+//	    int high = result.length - 1;
+//
+//	    while (low < high) {
+//	        int mid = (low + high) / 2;
+//	        assert(mid < high);
+//	        float d1 = Math.abs(a[mid  ] - x);
+//	        float d2 = Math.abs(a[mid+1] - x);
+//	        if (d2 <= d1)
+//	        {
+//	            low = mid+1;
+//	        	//high = mid+1;
+//	        }
+//	        else
+//	        {
+//	            high = mid;
+//	        }
+//	    }
+//	    return degrees/2-high+1;
+//	}
 
 	private static void sleep(long ms){
 		try {

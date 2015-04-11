@@ -22,6 +22,7 @@ public class HitchSpeedTester {
 	public static void main(String[] args) {
 		Button.waitForAnyPress();
 		NXTRegulatedMotor hitch = Motor.A;
+		
 		hitch.rotateTo(HITCH_LEFT_LIMIT);
 		setHitchDegPerSec(hitch, 10);
 		Button.waitForAnyPress();

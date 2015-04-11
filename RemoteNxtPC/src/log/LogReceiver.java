@@ -21,7 +21,7 @@ public class LogReceiver extends Thread{
 		//		Scanner s = new Scanner(System.in);
 //		String filename = s.nextLine();
 		try {
-			PrintWriter pw = new PrintWriter("test.csv");
+			PrintWriter pw = new PrintWriter("test"+System.currentTimeMillis()+".csv");
 			pw.println("Psi, Alpha, Beta\r\n");
 			pw.println(log);
 			pw.flush();

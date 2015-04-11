@@ -22,11 +22,13 @@ public class Logger {
 		firstInLine = false;
 	}
 	
+	private final int batchSize = 10;
+	
 	public void finishLine(){
 		log += "\r\n";
 		firstInLine = true;
 		noLines += 1;
-		if(noLines == 10){
+		if(noLines == batchSize){
 			sendLog();
 			log = "";
 			noLines = 0;

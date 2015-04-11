@@ -30,58 +30,56 @@ public class HitchTester {
 	private double kalmanGain = 0.1;  // Tuningparameter for observer
 	private double observerAdjust = 0;	
 
-	public double Observer(double dbeta,double psi){
-		double d_h  = 0.0450; 
-//		double d_b  = 0.0510;
-		double l_h  = 0.11;
-		double V 	= 0;
-		double dt   = 0.1;
-
-		double u = dbeta;
-		double B = (d_h/l_h);
-		double A = -V/l_h;
-
-		double dpsi_hat = A*last_psi*dt+B*dt*u+observerAdjust;
-		last_psi = last_psi+dpsi_hat;
-		observerAdjust = (psi-last_psi)*kalmanGain;
+	public double Observer(double dbeta, double psi){
+		//Skal få inn vinkelene i grader. 
 		
+		double boolV = 0; //Enten null eller en
+		// Tilsvarer en hastighet V = -0.136 som er motorspeed = 200
+		double A = 1.2364;
+		double B = 0.0435;
+		
+		// Utregning av tilpassning til sensorverder
+		observerAdjust = (psi-last_psi)*kalmanGain;
+		// Finner neste psi
+		last_psi = last_psi+B*dbeta+observerAdjust;
 		return last_psi;
 	}
 
 	public void run(){
 		NXTRegulatedMotor hitch = car.getHitch();
-		setHitchDegPerSec(hitch, dbeta);
 		for(int i = 0; i<2;i++){
-			hitch.backward();
-			dbeta = 10;
+			car.setHitchDegPerSec(dbeta);
 			while(hitch.getTachoCount()>=HITCH_RIGHT_LIMIT){
 				log();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-			hitch.forward();
-			dbeta = -10;
+			dbeta = -dbeta;
+			car.setHitchDegPerSec(dbeta);
 			while(hitch.getTachoCount()<=HITCH_LEFT_LIMIT){
 				log();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
+			dbeta = -dbeta;
 		}
 		hitch.rotateTo(0);
 		Button.waitForAnyPress();
 	}
 
-	private void setHitchDegPerSec(NXTRegulatedMotor hitch, float hitchDegSec){
-		final int gear1 = 16;
-		final int gear2 = 56;
-
-		float motorDegSec = (gear2/gear1)*hitchDegSec;		//motor
-		System.out.println(motorDegSec);
-		hitch.setSpeed(motorDegSec);
-	}
-
 	private void log(){
-		double psi = car.getHitchAngle() - car.getTrailerAngle();
+		double psi = car.getPsi();
+		double sigma = car.getTrailerAngle();
 		double beta = car.getHitchAngle();
 		double psi_hat = Observer(dbeta, psi);
-
-		System.out.println(psi);
 		
 		if(startTime==0){
 			startTime = System.currentTimeMillis();
@@ -95,6 +93,7 @@ public class HitchTester {
 		logger.writeDouble(psi_hat);
 		logger.writeDouble(beta);
 		logger.writeDouble(dbeta);
+		logger.writeDouble(sigma);
 		logger.finishLine();
 	}
 
@@ -105,8 +104,6 @@ public class HitchTester {
 		DataOutputStream dataOut = link.openDataOutputStream();
 
 		HitchTester t = new HitchTester(dataOut);
-		
-		Button.waitForAnyPress();
 		t.run();
 	}
 
