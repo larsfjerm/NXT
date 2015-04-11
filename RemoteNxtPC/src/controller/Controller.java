@@ -6,7 +6,11 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
+import lejos.pc.comm.NXTComm;
+import lejos.pc.comm.NXTCommException;
+import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTConnector;
+import lejos.pc.comm.NXTInfo;
 import log.LogReceiver;
 
 import java.io.DataInputStream;
@@ -60,7 +64,6 @@ public class Controller extends JFrame implements KeyEventDispatcher{
 	public void connect()
 	{
 		link = new NXTConnector();
-
 //		if(!link.connectTo("btspp://")){
 		if(!link.connectTo("usb://")){
 			System.out.println("\nCannot connect to NXT.");

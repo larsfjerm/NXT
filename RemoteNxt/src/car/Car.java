@@ -154,7 +154,7 @@ public class Car {
 	}
 	
 	public float getTrailerAngle(){
-		return angleSensor.getAngle();
+		return -angleSensor.getAngle();
 	}
 	
 	public float getTurnAngle(){
@@ -163,10 +163,14 @@ public class Car {
 	
 	public float getHitchAngle(){
 		//return hitch.getTachoCount();
-		return hitch.getTachoCount()/HITCH_RATIO;
+		return -hitch.getTachoCount()/HITCH_RATIO;
 	}
 	
 	public float[] getResult(){
 		return angleSensor.getResult();
+	}
+	
+	public NXTRegulatedMotor getHitch(){
+		return hitch;
 	}
 }
