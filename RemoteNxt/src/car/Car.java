@@ -33,8 +33,8 @@ public class Car {
 		// TODO remove
 		//hitch.rotateTo(0);
 		
-		backwardSpeed = 200;
-		forwardSpeed = 200;
+		backwardSpeed = 100;
+		forwardSpeed = 100;
 		turnSpeed = 100;
 		hitchSpeed = 100;
 		
@@ -91,6 +91,9 @@ public class Car {
 	
 	public void setHitchDegPerSec(float hitchDegSec){		
  		float motorDegSec = HITCH_RATIO*Math.abs(hitchDegSec);		//motor
+ 		if(motorDegSec>hitch.getMaxSpeed()){
+ 			motorDegSec = hitch.getMaxSpeed();
+ 		}
  		hitch.setSpeed(motorDegSec);
  		
  		if(hitch.isMoving()){

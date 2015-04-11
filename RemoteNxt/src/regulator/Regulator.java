@@ -12,8 +12,8 @@ public class Regulator extends Thread{
 	private static double startTime;
 	private static double currentTime;
 
-	private static double k1 = 9.8716;
-	private static double k2 = -0.83;
+	private static double k1 = -6.686;
+	private static double k2 = 0.382;
 
 	public Regulator(Car car, DataOutputStream dataOut){
 		this.car = car;
@@ -31,18 +31,16 @@ public class Regulator extends Thread{
 	public double Observer(double dbeta, double psi){
 		//Skal fŒ inn vinkelene i grader. 
 		
-		double boolV = 0; //Enten null eller en
-		// Tilsvarer en hastighet V = -0.136 som er motorspeed = 200
-		double A = 1.2364;
-		double B = -0.0435;
+		double A = 1.0638;
+		double B = 0.0422;
 		
 		// Utregning av tilpassning til sensorverder
 		observerAdjust = (psi-last_psi)*kalmanGain;
 		// Finner neste psi
-		last_psi = last_psi+B*dbeta+observerAdjust;
+		last_psi = A*last_psi+B*dbeta+observerAdjust;
 		return last_psi;
 	}
-
+	
 	public void regulate(){
 		double psiDeg = car.getPsi();
 		double psiRad = psiDeg*Math.PI/180;
@@ -50,37 +48,47 @@ public class Regulator extends Thread{
 		double betaDeg = car.getHitchAngle();
 		double betaRad = betaDeg*Math.PI/180;
 
-		//		double alphaDeg =  car.getTurnAngle();
-		//		double alphaRad = alphaDeg*Math.PI/180;
-
 		double dBetaDeg = getdBeta(psiRad,betaRad)*180/Math.PI;
 		
+		double psiHat = Observer(dBetaDeg, psiDeg);
+		
 		car.setHitchDegPerSec((float)dBetaDeg);
-		log(psiDeg,betaDeg,dBetaDeg);
+		
+		log(psiDeg,psiHat,betaDeg,dBetaDeg);
 	}
+	
+	
 
-	private void log(double psi, double beta, double dbeta ){
+	private void log(double psi, double psiHat, double beta, double dbeta ){
 		if(logger!=null){
-			currentTime = (System.currentTimeMillis()-startTime)*0.001;
+			setCurrentTime();
 			logger.writeDouble(currentTime);
 			logger.writeDouble(psi);
+			logger.writeDouble(psiHat);
 			logger.writeDouble(beta);
 			logger.writeDouble(dbeta);
 			logger.finishLine();
 		}
 	}
+	
+	private void setCurrentTime(){
+		currentTime = (System.currentTimeMillis()-startTime)*0.001;
+	}
 
 	public void run(){
 		startTime = System.currentTimeMillis();
-		log(car.getPsi(), car.getHitchAngle(), 0);
+		log(car.getPsi(), car.getPsi(), car.getHitchAngle(), 0);
+		
+		long prevStartTime = 0;
+		long dt;
 		while(true){
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			car.checkHitchLimit();
-			regulate();
+			dt =  System.currentTimeMillis() - prevStartTime;
+			if(dt >= 500){
+				System.out.println(dt);
+				prevStartTime = System.currentTimeMillis();
+				regulate();
+			}
 			
 			//			if(car.isMovivingBackward()){
 			//				regulate();
