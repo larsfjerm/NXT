@@ -14,7 +14,7 @@ public class HitchSpeedTester {
 		final int gear1 = 16;
 		final int gear2 = 56;
 		
- 		float motorDegSec = (gear2/gear1)*hitchDegSec;		//motor
+ 		float motorDegSec = (gear2/gear1)*(float)1.1428*hitchDegSec;		//motor
  		System.out.println(motorDegSec);
  		hitch.setSpeed(motorDegSec);
 	}
@@ -25,10 +25,12 @@ public class HitchSpeedTester {
 		
 		hitch.rotateTo(HITCH_LEFT_LIMIT);
 		setHitchDegPerSec(hitch, 10);
+		System.out.println(hitch.getTachoCount());
+		System.out.println(hitch.getPosition());
 		Button.waitForAnyPress();
  		hitch.backward();
- 		while(hitch.getTachoCount()>=HITCH_RIGHT_LIMIT){
- 			
+ 		while(hitch.getTachoCount()>=(double)HITCH_RIGHT_LIMIT){
+ 			System.out.println(hitch.getTachoCount());
  		}
 	}
 }

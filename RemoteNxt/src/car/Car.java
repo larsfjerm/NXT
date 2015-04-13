@@ -9,7 +9,7 @@ public class Car {
 	private static final int FRONT_RIGHT_LIMIT = -30;
 	private static final int HITCH_LEFT_LIMIT = 120;
 	private static final int HITCH_RIGHT_LIMIT = -120;
-	private static final float HITCH_RATIO = 56/16;
+	private static final float HITCH_RATIO = (56/16)*(float)1.1428;
 	
 	private NXTRegulatedMotor backWheels;
 	private NXTRegulatedMotor frontWheels;

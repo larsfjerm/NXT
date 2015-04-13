@@ -18,8 +18,8 @@ public class HitchAngleSensor {
 	public HitchAngleSensor(){
 		minAngl = -120;
 		maxAngl = 120;
-		numSteps = 20;
-		angles = 60;
+		numSteps = 30;
+		angles = 49;
 		stepLength = (maxAngl-minAngl)/(numSteps*2);
 		result = new float[numSteps*2+1];
 		s = new LightSensor(SensorPort.S1);

@@ -27,7 +27,7 @@ public class HitchTester {
 
 	private float dbeta = 10;
 	private double last_psi= 0;
-	private double kalmanGain = 0.25;  // Tuningparameter for observer
+	private double kalmanGain = 0.15;  // Tuningparameter for observer
 	private double observerAdjust = 0;	
 
 	public double Observer(double dbeta, double psi){
