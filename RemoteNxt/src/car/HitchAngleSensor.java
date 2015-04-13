@@ -70,14 +70,16 @@ public class HitchAngleSensor {
 	}
 	
 	public int find2(float x){
-		int i = numSteps/2;
-		if(x > result[i]){
-			while(x > result[i]){
-				i--;
-			}
-		}else{
+		int i;
+		if(x > result[numSteps]){
+			i = 0;
 			while(x < result[i]){
 				i++;
+			}
+		}else{
+			i = numSteps*2;
+			while(x > result[i]){
+				i--;
 			}
 		}
 		return i;
