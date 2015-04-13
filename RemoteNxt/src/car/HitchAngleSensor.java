@@ -69,11 +69,25 @@ public class HitchAngleSensor {
 	    return high;
 	}
 	
+	public int find2(float x){
+		int i = numSteps/2;
+		if(x > result[i]){
+			while(x > result[i]){
+				i--;
+			}
+		}else{
+			while(x < result[i]){
+				i++;
+			}
+		}
+		return i;
+	}
+	
 	public double getAngle(boolean interpolation){
 		float x = getLightValue(0);
 		float r = (float)angles/(float)numSteps;
 		
-		int i = find(x);
+		int i = find2(x);
 		int j;
 		
 		if(x > result[i] && interpolation){
@@ -83,6 +97,7 @@ public class HitchAngleSensor {
 		}else{
 			return i*r-angles;
 		}
+		
 		
 		double y1 = i*r-angles;
 		double y2 = j*r-angles;
