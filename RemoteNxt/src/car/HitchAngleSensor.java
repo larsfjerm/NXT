@@ -1,5 +1,6 @@
 package car;
 
+import lejos.nxt.Button;
 import lejos.nxt.LightSensor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.SensorPort;
@@ -24,7 +25,10 @@ public class HitchAngleSensor {
 		s = new LightSensor(SensorPort.S1);
 	}
 	
-	public void calibrate(NXTRegulatedMotor hitch){		
+	public void calibrate(NXTRegulatedMotor hitch){
+//		System.out.println("Press button to start hitch sensor calibration.");
+//		Button.waitForAnyPress();
+		
 		hitch.rotateTo(minAngl);
 		sleep(500);
 		s.calibrateLow();
@@ -51,55 +55,30 @@ public class HitchAngleSensor {
 		return sum/10;
 	}
 	
-	public int find(float x){		
-	    int low = 0;
-	    int high = result.length - 1;
-
-	    while (low < high) {
-	        int mid = (low + high) / 2;
-	        assert(mid < high);
-	        float d1 = Math.abs(result[mid  ] - x);
-	        float d2 = Math.abs(result[mid+1] - x);
-	        if (d2 <= d1){
-	            low = mid+1;
-	        }else{
-	            high = mid;
-	        }
-	    }
-	    return high;
-	}
-	
-	public int find2(float x){
-		int i;
-		if(x > result[numSteps]){
-			i = 0;
-			while(x < result[i]){
-				i++;
-			}
-		}else{
-			i = numSteps*2;
-			while(x > result[i]){
-				i--;
-			}
-		}
-		return i;
-	}
-	
 	public double getAngle(boolean interpolation){
 		float x = getLightValue(0);
 		float r = (float)angles/(float)numSteps;
 		
-		int i = find2(x);
-		int j;
-		
-		if(x > result[i] && i > 0 && interpolation){
-			j = i - 1;
-		}else if(x < result[i] && i < numSteps*2 && interpolation){
-			j = i + 1;
+		int i,j;
+		if(x > result[numSteps]){
+			i = 0;
+			while(x<result[i])
+				i++;
+			j = i;
+			if(i > 0)
+				j -= 1;	
 		}else{
-			return i*r-angles;
+			i = numSteps*2;
+			while(x>result[i])
+				i--;
+			j = i;
+			if(i < numSteps*2)
+				j += 1;
 		}
 		
+		if(i==j && !interpolation){
+			return i*r-angles;
+		}
 		
 		double y1 = i*r-angles;
 		double y2 = j*r-angles;
