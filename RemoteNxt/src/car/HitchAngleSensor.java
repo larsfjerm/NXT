@@ -92,9 +92,9 @@ public class HitchAngleSensor {
 		int i = find2(x);
 		int j;
 		
-		if(x > result[i] && interpolation){
+		if(x > result[i] && i > 0 && interpolation){
 			j = i - 1;
-		}else if(x < result[i] && interpolation){
+		}else if(x < result[i] && i < numSteps*2 && interpolation){
 			j = i + 1;
 		}else{
 			return i*r-angles;
