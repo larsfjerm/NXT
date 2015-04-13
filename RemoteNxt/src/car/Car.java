@@ -89,9 +89,10 @@ public class Car {
 		}
 	}
 	
-	public void setHitchDegPerSec(float hitchDegSec){		
+	public void setHitchDegPerSec(float hitchDegSec){
  		float motorDegSec = HITCH_RATIO*Math.abs(hitchDegSec);		//motor
  		if(motorDegSec>hitch.getMaxSpeed()){
+ 			Sound.beep();
  			motorDegSec = hitch.getMaxSpeed();
  		}
  		hitch.setSpeed(motorDegSec);
@@ -170,7 +171,7 @@ public class Car {
 	}
 	
 	public float getTrailerAngle(){
-		return (float)angleSensor.getAngle();
+		return (float)angleSensor.getAngle(false);
 	}
 	
 	public float[] getResult(){
