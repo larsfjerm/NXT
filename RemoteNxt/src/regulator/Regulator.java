@@ -12,8 +12,8 @@ public class Regulator extends Thread{
 	private static double startTime;
 	private static double currentTime;
 
-	private static double k1 = -6.686;
-	private static double k2 = 0.382;
+	private static double k1 = -9.0788;//-6.9821;
+	private static double k2 = 1.75;//0.5088;
 
 	public Regulator(Car car, DataOutputStream dataOut){
 		this.car = car;
@@ -27,12 +27,13 @@ public class Regulator extends Thread{
 	private double last_psi= 0;
 	private double kalmanGain = 0.1;  // Tuningparameter for observer
 	private double observerAdjust = 0;	
+	private double dBetaDeg = 0;
 
 	public double Observer(double dbeta, double psi){
 		//Skal få inn vinkelene i grader. 
 		
-		double A = 1.0638;
-		double B = 0.0422;
+		double A = 1.0465;
+		double B = 0.2093;
 		
 		// Utregning av tilpassning til sensorverder
 		observerAdjust = (psi-last_psi)*kalmanGain;
@@ -47,10 +48,10 @@ public class Regulator extends Thread{
 
 		double betaDeg = car.getHitchAngle();
 		double betaRad = betaDeg*Math.PI/180;
-
-		double dBetaDeg = getdBeta(psiRad,betaRad)*180/Math.PI;
 		
 		double psiHat = Observer(dBetaDeg, psiDeg);
+		
+		dBetaDeg = getdBeta(psiRad,betaRad)*180/Math.PI;
 		
 		car.setHitchDegPerSec((float)dBetaDeg);
 		

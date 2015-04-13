@@ -27,7 +27,7 @@ public class HitchTester {
 
 	private float dbeta = 10;
 	private double last_psi= 0;
-	private double kalmanGain = 0.1;  // Tuningparameter for observer
+	private double kalmanGain = 0.25;  // Tuningparameter for observer
 	private double observerAdjust = 0;	
 
 	public double Observer(double dbeta, double psi){
@@ -35,8 +35,8 @@ public class HitchTester {
 		
 		double boolV = 0; //Enten null eller en
 		// Tilsvarer en hastighet V = -0.136 som er motorspeed = 200
-		double A = 1.2364;
-		double B = 0.0435;
+		double A = 1.2364*2;
+		double B = 0.0871;
 		
 		// Utregning av tilpassning til sensorverder
 		observerAdjust = (psi-last_psi)*kalmanGain;
@@ -47,27 +47,44 @@ public class HitchTester {
 
 	public void run(){
 		NXTRegulatedMotor hitch = car.getHitch();
+		
+		long prevStartTime = 0;
+		long dt;
+		
 		for(int i = 0; i<2;i++){
 			car.setHitchDegPerSec(dbeta);
 			while(hitch.getTachoCount()>=HITCH_RIGHT_LIMIT){
-				log();
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				
+				dt =  System.currentTimeMillis() - prevStartTime;
+				
+				if(dt >= 200){
+					prevStartTime = System.currentTimeMillis();
+					log();
 				}
+				
+//				try {
+//					Thread.sleep(100);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 			dbeta = -dbeta;
 			car.setHitchDegPerSec(dbeta);
 			while(hitch.getTachoCount()<=HITCH_LEFT_LIMIT){
-				log();
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				
+				dt =  System.currentTimeMillis() - prevStartTime;
+				
+				if(dt >= 200){
+					prevStartTime = System.currentTimeMillis();
+					log();
 				}
+//				try {
+//					Thread.sleep(100);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 			dbeta = -dbeta;
 		}
