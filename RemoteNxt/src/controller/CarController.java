@@ -1,34 +1,10 @@
 package controller;
 
-
-/*
- * September 21, 2009
- * Author by Tawat Atigarbodee
- *
- * Install this program on to NXT brick and use it with NXTremoteControl_TA.java
- *
- * To use this program.
- *  -   Install Lejos 0.8.5
- *  -   Include Lejos_nxj library to the project path
- *  -   Upload the program using lejosdl.bat (I use Eclipse)
- *  -   To exit the program, restart NXT brick (remove battery)
- * 
- * NXT setup
- *  -  Port A for right wheel
- *  -  Port C for left wheel
- *  -  No sensor is needed
- *  
- * Note: This program is a partial of my project file. 
- * I use â€œUSBSendâ€? and â€œUSBReceiveâ€? created by Lawrie Griffiths 
- * as a pattern for creating USB communication between PC and NXT. 
- */
-
 import java.io.*;
 
 import regulator.Regulator;
 import car.Car;
 import lejos.nxt.comm.*;
-
 
 public class CarController{ 
 	private DataOutputStream dataOut; 
