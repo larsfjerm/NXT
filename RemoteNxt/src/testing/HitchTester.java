@@ -4,6 +4,8 @@ import java.io.DataOutputStream;
 
 import lejos.nxt.Button;
 import lejos.nxt.NXTRegulatedMotor;
+import lejos.nxt.comm.BTConnection;
+import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.comm.USB;
 import lejos.nxt.comm.USBConnection;
 import log.Logger;
@@ -116,7 +118,8 @@ public class HitchTester {
 
 	public static void main(String[] args) {
 		System.out.println("Waiting for connection...");
-		USBConnection link = USB.waitForConnection();
+		BTConnection link = Bluetooth.waitForConnection();
+		//USBConnection link = USB.waitForConnection();
 		System.out.println("Connected.");
 		DataOutputStream dataOut = link.openDataOutputStream();
 

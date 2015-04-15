@@ -44,7 +44,7 @@ public class Regulator extends Thread{
 	}
 	
 	public void regulate(){
-		double psiDeg = car.getPsi()-5;
+		double psiDeg = car.getPsi() - 3.2;
 		double psiRad = (psiDeg)*Math.PI/180;
 
 		double betaDeg = car.getHitchAngle();
@@ -89,6 +89,7 @@ public class Regulator extends Thread{
 			if(dt >= 400){
 				System.out.println(dt);
 				prevStartTime = System.currentTimeMillis();
+				if(car.isMovivingBackward())
 				regulate();
 			}
 			

@@ -76,17 +76,19 @@ public class HitchAngleSensor {
 				j += 1;
 		}
 		
-		if(i==j && !interpolation){
-			return i*r-angles;
-		}
-		
 		double y1 = i*r-angles;
 		double y2 = j*r-angles;
 		double x1 = result[i];
 		double x2 = result[j];
 		
-		if(x2==x1){
-			return y1;
+		if(x2==x1 || !interpolation){
+			float d1 = (float) Math.abs(x-x1);
+			float d2 = (float) Math.abs(x-x2);
+			if(d1<=d2){
+				return y1;
+			}else{
+				return y2;
+			}
 		}
 		
 		return y1+(y2-y1)*(x-x1)/(x2-x1);

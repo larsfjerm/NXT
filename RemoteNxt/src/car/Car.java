@@ -34,7 +34,7 @@ public class Car {
 		//hitch.rotateTo(0);
 		
 		backwardSpeed = 100;
-		forwardSpeed = 100;
+		forwardSpeed = 200;
 		turnSpeed = 100;
 		hitchSpeed = 100;
 		
@@ -171,7 +171,7 @@ public class Car {
 	}
 	
 	public float getTrailerAngle(){
-		return (float)angleSensor.getAngle(false);
+		return (float)angleSensor.getAngle(true);
 	}
 	
 	public float[] getResult(){

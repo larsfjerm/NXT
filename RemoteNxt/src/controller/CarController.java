@@ -29,8 +29,8 @@ public class CarController{
 
 	public void connect(){  
 		System.out.println("Waiting for connection...");
-//		BTConnection link = Bluetooth.waitForConnection();
-		USBConnection link = USB.waitForConnection();
+		BTConnection link = Bluetooth.waitForConnection();
+		//USBConnection link = USB.waitForConnection();
 		System.out.println("Connected.");
 		dataOut = link.openDataOutputStream();
 		dataIn = link.openDataInputStream();
@@ -38,8 +38,8 @@ public class CarController{
 
 	public void run(){
 		r.start();
-		car.moveBackward();
-//		while(checkCommand()){}
+		//car.moveBackward();
+		while(checkCommand()){}
 	}
 
 	public boolean checkCommand(){
